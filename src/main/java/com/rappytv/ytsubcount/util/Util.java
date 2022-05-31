@@ -31,10 +31,10 @@ public class Util {
         ViewModule.ticks = -1;
     }
 
-    private static ArrayList<String> getInfos(String channelId, String apiKey) {
+    private static ArrayList<String> getChannel(String channelId, String apiKey) {
         HttpsURLConnection httpConn = null;
         try {
-            URL u = new URL("https://www.googleapis.com/youtube/v3/channels?part=snippet,contentDetails,statistics&id=" + channelId + "&key=" + apiKey);
+            URL u = new URL("https://www.googleapis.com/youtube/v3/channels?part=snippet&id=" + channelId + "&key=" + apiKey);
             URLConnection conn = u.openConnection();
             conn.connect();
 
@@ -52,6 +52,8 @@ public class Util {
             e.printStackTrace();
         } catch (NullPointerException e) {
             return null;
+        } catch(IndexOutOfBoundsException e) {
+            return null;
         } finally {
             if(httpConn != null) {
                 try {
@@ -64,19 +66,74 @@ public class Util {
         return null;
     }
 
+    private static ArrayList<String> getStatistics(String channelId, String apiKey) {
+        HttpsURLConnection httpConn = null;
+        try {
+            URL u = new URL("https://www.googleapis.com/youtube/v3/channels?part=statistics&id=" + channelId + "&key=" + apiKey);
+            URLConnection conn = u.openConnection();
+            conn.connect();
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            ArrayList<String> lines = new ArrayList<>();
+
+            String line;
+            while((line = br.readLine()) != null) {
+                lines.add(line);
+            }
+            br.close();
+
+            return lines;
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (NullPointerException e) {
+            return null;
+        } catch(IndexOutOfBoundsException e) {
+            return null;
+        } finally {
+            if(httpConn != null) {
+                try {
+                    httpConn.disconnect();
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return null;
+    }
+
+    private static String getName(String channelId, String apiKey) {
+        try {
+            ArrayList<String> lines = getChannel(channelId, apiKey);
+            String name = lines.get(13).substring(18, lines.get(13).length() - 2);
+            Util.msg("Y " + name);
+
+            return name;
+        } catch (NullPointerException e) {
+            return null;
+        } catch(IndexOutOfBoundsException e) {
+            return null;
+        } catch(NumberFormatException e) {
+            return null;
+        }
+    }
+
     private static int[] getStats(String channelId, String apiKey) {
         try {
-            ArrayList<String> lines = getInfos(channelId, apiKey);
+            ArrayList<String> lines = getStatistics(channelId, apiKey);
 
-            boolean hiddenSubs = Boolean.getBoolean(lines.get(49).substring(8, lines.get(49).length() - 1));
+            boolean hiddenSubs = Boolean.getBoolean(lines.get(15).substring(33, lines.get(15).length() - 1));
             int subs;
             if(hiddenSubs) subs = -1;
-            else subs = Integer.parseInt(lines.get(48).substring(28, lines.get(48).length() - 2));
-            int views = Integer.parseInt(lines.get(47).substring(22, lines.get(47).length() - 2));
-            int videos = Integer.parseInt(lines.get(50).substring(23, lines.get(50).length() - 1));
+            else subs = Integer.parseInt(lines.get(14).substring(28, lines.get(14).length() - 2));
+            int views = Integer.parseInt(lines.get(13).substring(22, lines.get(13).length() - 2));
+            int videos = Integer.parseInt(lines.get(16).substring(23, lines.get(16).length() - 1));
 
             return new int[]{subs, views, videos};
         } catch (NullPointerException e) {
+            return null;
+        } catch(IndexOutOfBoundsException e) {
+            return null;
+        } catch(NumberFormatException e) {
             return null;
         }
     }
@@ -85,16 +142,21 @@ public class Util {
     public static String getChannelname(String channelId, String apiKey) {
         if(((NameModule.ticks / 20) / 60) == Main.minutes || NameModule.ticks == -1) {
             try {
-                ArrayList<String> lines = getInfos(channelId, apiKey);
+                String chname = getName(channelId, apiKey);
                 NameModule.ticks = 0;
+                Util.msg("Refreshed.");
 
                 String res;
-                if(lines == null) res = "Channel not found!";
-                else res = lines.get(13).substring(18, lines.get(13).length() - 2);
+                if(chname == null) res = "Channel not found!";
+                else res = chname;
                 name = res;
                 return res;
             } catch (NullPointerException e) {
-                return "Channel not found!";
+                return null;
+            } catch(IndexOutOfBoundsException e) {
+                return null;
+            } catch(NumberFormatException e) {
+                return null;
             }
         } else {
             NameModule.ticks++;

@@ -22,7 +22,7 @@ public class Main extends LabyModAddon {
     public static String defaultApiKey = "AIzaSyAG9L9QNN4nN0n2AC6p4D78WmMGQ5GNVQM";
     public static String apiKey = "AIzaSyAG9L9QNN4nN0n2AC6p4D78WmMGQ5GNVQM";
     public static String channelId = "";
-    public static int minutes = 5;
+    public static int minutes = 10;
     public static Main instance;
     public static String prefix = "\u00A74\u00A7lSub Count \u00A78\u00A7l> \u00A7r";
 
