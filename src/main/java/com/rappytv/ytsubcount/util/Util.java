@@ -105,7 +105,6 @@ public class Util {
         try {
             ArrayList<String> lines = getChannel(channelId, apiKey);
             String name = lines.get(13).substring(18, lines.get(13).length() - 2);
-            Util.msg("Y " + name);
 
             return name;
         } catch (NullPointerException e) {
@@ -144,7 +143,6 @@ public class Util {
             try {
                 String chname = getName(channelId, apiKey);
                 NameModule.ticks = 0;
-                Util.msg("Refreshed.");
 
                 String res;
                 if(chname == null) res = "Channel not found!";
