@@ -1,0 +1,10 @@
+{
+  "uuid": "%uuid%",
+  "name": "YouTube Sub Counter",
+  "mainClass": "com.rappytv.ytsubcount.main.Main",
+  "description": "I made this plugin because the integrated Subscriber counter from labymod sadly does not work.",
+  "version": 1,
+  "author": "RappyTV#6969",
+  "category": 1,
+  "icon": "https://cdn.discordapp.com/attachments/977964606947463198/979839065035796560/youtube.png?size=4096"
+}
