@@ -1,4 +1,4 @@
-# **YouTube Addon**
+# **YouTube Addon [LabyMod 3]**
 > With this plugin you can add modules to your screen which can display your current YouTube username, sub count, view count and video count.
 
 ### You can customize these Settings:
